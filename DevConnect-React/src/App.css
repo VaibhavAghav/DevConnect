@@ -1,0 +1,7 @@
+/* App.css */
+.navbar-faint-blue {
+  background-color: rgba(173, 216, 230, 0.3); /* light blue with transparency */
+}
+.footer-faint-blue {
+  background-color: rgba(173, 216, 230, 0.3); /* LightBlue with transparency */
+}
