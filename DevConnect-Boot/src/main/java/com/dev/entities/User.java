@@ -1,39 +1,37 @@
 package com.dev.entities;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.dev.constant.Role;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
-public class User {
+public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long userId;
-	
+
 	@Column(unique = true)
 	private String userName;
-	
+
 	private String userEmail;
-	
+
 	private String userPassword;
-	
+
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
 	public User() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public User(long userId, String userName, String userEmail, String userPassword, Role role) {
-		super();
 		this.userId = userId;
 		this.userName = userName;
 		this.userEmail = userEmail;
@@ -41,11 +39,43 @@ public class User {
 		this.role = role;
 	}
 
+	// UserDetails implementation
 	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", userName=" + userName + ", userEmail=" + userEmail + ", userPassword="
-				+ userPassword + ", role=" + role + "]";
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority(role.name()));
 	}
+
+	@Override
+	public String getPassword() {
+		return this.userPassword;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.userName;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	// Getters & Setters
 
 	public long getUserId() {
 		return userId;
@@ -53,14 +83,6 @@ public class User {
 
 	public void setUserId(long userId) {
 		this.userId = userId;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 
 	public String getUserEmail() {
@@ -71,8 +93,8 @@ public class User {
 		this.userEmail = userEmail;
 	}
 
-	public String getUserPassword() {
-		return userPassword;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public void setUserPassword(String userPassword) {
@@ -86,7 +108,10 @@ public class User {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-	
-	
-	
+
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", userName=" + userName + ", userEmail=" + userEmail + ", role=" + role
+				+ "]";
+	}
 }

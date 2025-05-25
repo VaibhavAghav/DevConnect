@@ -26,12 +26,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User updateUser(long id, User user) {
+	public User updateUser(long id, User updatedUserData) {
 		User existingUser = getUserById(id);
 		if (existingUser == null) {
-			throw new EntityNotFoundException("user with id " + id + " is not found");
+			throw new EntityNotFoundException("User with id " + id + " is not found");
 		}
-		return userRepository.save(user);
+		existingUser.setUserName(updatedUserData.getUsername());
+		existingUser.setUserEmail(updatedUserData.getUserEmail());
+		existingUser.setUserPassword(updatedUserData.getPassword());
+		existingUser.setRole(updatedUserData.getRole());
+		return userRepository.save(existingUser);
 	}
 
 	@Override

@@ -1,3 +1,8 @@
 DevConnect-React/node_modules/
 
 .metadata/
+
+#existing push
+# git remote add origin https://github.com/VaibhavAghav/DevConnect.git
+# git branch -M main
+# git push -u origin main

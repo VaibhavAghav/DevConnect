@@ -30,4 +30,9 @@ public class GlobalException {
 				HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<String> handleGeneric(Exception ex) {
+		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
 }

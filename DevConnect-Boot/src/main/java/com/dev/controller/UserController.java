@@ -1,7 +1,10 @@
 package com.dev.controller;
 
+import java.security.Principal;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,13 +29,16 @@ public class UserController {
 		this.userServiceImpl = serviceImpl;
 	}
 
-	@GetMapping("/get/{userId}")
-	public ResponseEntity<?> findUserById(@PathVariable long userId) {
-		User user = userServiceImpl.getUserById(userId);
+	@GetMapping("/get/{id}")
+	public ResponseEntity<?> getUser(@PathVariable Long id, Principal principal) {
+		User user = userServiceImpl.getUserById(id);
 		if (user == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
 		}
-		return new ResponseEntity<>(user, HttpStatus.OK);
+		if (!user.getUsername().equals(principal.getName())) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
+		}
+		return ResponseEntity.ok(user);
 	}
 
 	@PostMapping("/add")
