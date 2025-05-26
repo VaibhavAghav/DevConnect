@@ -11,7 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.dev.constant.Role;
+import com.dev.entities.Profile;
 import com.dev.entities.User;
+import com.dev.repository.ProfileRepository;
 import com.dev.repository.UserRepository;
 import com.dev.request.UserLogin;
 import com.dev.request.UserRegister;
@@ -26,13 +28,15 @@ public class AuthController {
 	private final JwtUtil jwtUtil;
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final ProfileRepository profileRepository;
 
 	@Autowired
-	public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository,
-			PasswordEncoder passwordEncoder) {
+	public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepo,
+			ProfileRepository profileRepo, PasswordEncoder passwordEncoder) {
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
-		this.userRepository = userRepository;
+		this.userRepository = userRepo;
+		this.profileRepository = profileRepo;
 		this.passwordEncoder = passwordEncoder;
 	}
 
@@ -64,8 +68,15 @@ public class AuthController {
 		user.setUserPassword(passwordEncoder.encode(userRegister.getPassword()));
 		user.setRole(Role.USER);
 
-		userRepository.save(user);
+		Profile profile = new Profile();
+		profile.setProfileUserName(userRegister.getUserName());
+		profile.setProfileBio(userRegister.getUserName());
 
+		User savedUser = userRepository.save(user);
+		profile.setUser(savedUser);
+		profileRepository.save(profile);
+		System.out.println("AuthController Profile saved " + profile);
+		System.out.println("AuthController User saved " + user);
 		return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
 	}
 }

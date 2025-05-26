@@ -21,6 +21,7 @@ public class User implements UserDetails {
 	@Column(unique = true)
 	private String userName;
 
+	@Column(unique = true)
 	private String userEmail;
 
 	private String userPassword;
@@ -28,15 +29,42 @@ public class User implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
+	private boolean isEnabled = true;
+
+	private boolean isAccountNonExpired = true;
+
+	private boolean isAccountNonLocked = true;
+
+	private boolean isCredentialsNonExpired = true;
+
+	private String phoneNumber;
+
+	private boolean isPhoneNumberVerified;
+
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+	private Profile profile;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Post> post;
+
+	// Constructors
 	public User() {
 	}
 
-	public User(long userId, String userName, String userEmail, String userPassword, Role role) {
+	public User(long userId, String userName, String userEmail, String userPassword, Role role, boolean isEnabled,
+			boolean isAccountNonExpired, boolean isAccountNonLocked, boolean isCredentialsNonExpired,
+			String phoneNumber, boolean isPhoneNumberVerified) {
 		this.userId = userId;
 		this.userName = userName;
 		this.userEmail = userEmail;
 		this.userPassword = userPassword;
 		this.role = role;
+		this.isEnabled = isEnabled;
+		this.isAccountNonExpired = isAccountNonExpired;
+		this.isAccountNonLocked = isAccountNonLocked;
+		this.isCredentialsNonExpired = isCredentialsNonExpired;
+		this.phoneNumber = phoneNumber;
+		this.isPhoneNumberVerified = isPhoneNumberVerified;
 	}
 
 	// UserDetails implementation
@@ -57,26 +85,25 @@ public class User implements UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		return this.isAccountNonExpired;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return this.isAccountNonLocked;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+		return this.isCredentialsNonExpired;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return this.isEnabled;
 	}
 
-	// Getters & Setters
-
+	// Getters & Setters for other fields
 	public long getUserId() {
 		return userId;
 	}
@@ -109,9 +136,34 @@ public class User implements UserDetails {
 		this.role = role;
 	}
 
+	public Profile getProfile() {
+		return profile;
+	}
+
+	public void setProfile(Profile profile) {
+		this.profile = profile;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public boolean isPhoneNumberVerified() {
+		return isPhoneNumberVerified;
+	}
+
+	public void setPhoneNumberVerified(boolean isPhoneNumberVerified) {
+		this.isPhoneNumberVerified = isPhoneNumberVerified;
+	}
+
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", userName=" + userName + ", userEmail=" + userEmail + ", role=" + role
-				+ "]";
+				+ ", isEnabled=" + isEnabled + ", phoneNumber=" + phoneNumber + ", isPhoneNumberVerified="
+				+ isPhoneNumberVerified + "]";
 	}
 }

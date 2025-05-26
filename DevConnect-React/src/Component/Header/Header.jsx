@@ -60,6 +60,16 @@ function Header() {
                 Home
               </Link>
             </li>
+
+            {/* Profile link conditionally rendered here */}
+            {userName && (
+              <li className="nav-item mx-3">
+                <Link className="nav-link" to="/profile">
+                  Profile
+                </Link>
+              </li>
+            )}
+
             <li className="nav-item mx-3">
               <Link className="nav-link" to="/posts">
                 Posts

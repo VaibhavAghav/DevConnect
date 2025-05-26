@@ -9,6 +9,8 @@ import Register from "./Component/Signing/Register";
 import Login from "./Component/Signing/Login";
 import Post from "./Component/Post/Post";
 import PrivateRoute from "./Component/Signing/PrivateRoute";
+import Profile from "./Component/Profile/Profile";
+import UpdateProfile from "./Component/Profile/UpdateProfile";
 
 function App() {
   return (
@@ -25,6 +27,14 @@ function App() {
           element={
             <PrivateRoute>
               <Post />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <UpdateProfile />
             </PrivateRoute>
           }
         />

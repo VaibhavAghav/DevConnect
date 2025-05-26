@@ -29,7 +29,8 @@ function Register() {
         }
       );
       if (resaponseSavedData.ok) {
-        console.log("Data saved ");
+        const responseData = await resaponseSavedData.json();
+        console.log("Data saved ", responseData);
         navigate("/login");
       } else {
         console.log("Failed to saved data");

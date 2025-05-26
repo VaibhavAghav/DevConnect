@@ -32,8 +32,8 @@ function Login() {
         console.log("Login successful:", result);
         Cookies.set("token", result.token);
         localStorage.setItem("userName", user.userName);
+        navigate("/profile");
         window.location.reload();
-        navigate("/posts");
       } else {
         console.error("Login failed:", result);
         alert(result.message || "Login failed. Please try again.");

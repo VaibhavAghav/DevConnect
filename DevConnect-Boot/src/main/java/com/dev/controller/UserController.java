@@ -81,6 +81,7 @@ public class UserController {
 
 	@GetMapping("/getuser/{userName}")
 	public ResponseEntity<?> getUserByUserName(@PathVariable String userName) {
+		System.out.println("hello there its'/getuser ");
 		try {
 			User user = userServiceImpl.getUserByUserName(userName);
 			if (user != null) {
