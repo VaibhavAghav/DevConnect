@@ -5,6 +5,10 @@ import Header from "./Component/Header/Header";
 import HomePage from "./Component/HomePage/HomePage";
 import AboutUs from "./Component/HomePage/AboutUs";
 import Contact from "./Component/HomePage/Contact";
+import Register from "./Component/Signing/Register";
+import Login from "./Component/Signing/Login";
+import Post from "./Component/Post/Post";
+import PrivateRoute from "./Component/Signing/PrivateRoute";
 
 function App() {
   return (
@@ -14,6 +18,16 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/posts"
+          element={
+            <PrivateRoute>
+              <Post />
+            </PrivateRoute>
+          }
+        />
       </Routes>
       <Footer />
     </>

@@ -19,6 +19,7 @@ import com.dev.security.JwtUtil;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin("*")
 public class AuthController {
 
 	private final AuthenticationManager authenticationManager;
