@@ -42,7 +42,9 @@ public class ProfileController {
 
 	@PutMapping("/update/{profileId}")
 	public ResponseEntity<?> updateProfile(@PathVariable long profileId, @ModelAttribute UserProfileForm profileForm) {
+		System.out.println("UpdateProfile Form 1" + profileForm);
 		Profile profile = profileService.updateProfile(profileId, profileForm);
+		System.out.println("UpdaProfile form 2" + profile);
 		if (profile == null) {
 			return new ResponseEntity<>("user not found to update ", HttpStatus.NO_CONTENT);
 		}
@@ -75,6 +77,7 @@ public class ProfileController {
 
 	@GetMapping("/user/{userName}")
 	public ResponseEntity<?> getProfileByUserName(@PathVariable String userName) {
+		System.out.println("Profile by user/name " + userName);
 		Profile profile = profileService.getProfileByUserName(userName);
 		if (profile == null) {
 			return new ResponseEntity<>("No Profile Found with this userName " + userName, HttpStatus.NO_CONTENT);

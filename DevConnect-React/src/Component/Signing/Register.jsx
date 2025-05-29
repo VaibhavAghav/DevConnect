@@ -20,7 +20,7 @@ function Register() {
     console.log(user);
 
     try {
-      const resaponseSavedData = await fetch(
+      const responseSavedData = await fetch(
         "http://localhost:8080/auth/register",
         {
           method: "POST",
@@ -28,15 +28,16 @@ function Register() {
           body: JSON.stringify(user),
         }
       );
-      if (resaponseSavedData.ok) {
-        const responseData = await resaponseSavedData.json();
+
+      if (responseSavedData.ok) {
+        const responseData = await responseSavedData.json();
         console.log("Data saved ", responseData);
         navigate("/login");
       } else {
-        console.log("Failed to saved data");
+        console.log("Failed to save data. Status:", responseSavedData.status);
       }
     } catch (error) {
-      console.error("Error in submitting form for registration");
+      console.error("Error in submitting form for registration", error);
     }
 
     setUser({

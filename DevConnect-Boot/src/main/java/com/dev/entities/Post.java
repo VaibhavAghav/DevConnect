@@ -1,13 +1,21 @@
 package com.dev.entities;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.ToStringExclude;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -20,13 +28,17 @@ public class Post {
 	private String postContent;
 	private String publicPostUrl;
 	private String cloudinaryPostUrl;
-	private int postLikes;
 	private LocalDateTime postCreation;
 	private LocalDateTime postUpdation;
 
 	@ManyToOne
-	@JsonIgnore
+	@JsonIgnoreProperties({"posts", "password", "email"})
 	private User user;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "post_likes", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "profile_id"))
+	@ToStringExclude
+	private Set<Profile> likedByProfiles = new HashSet<>();
 
 	public long getPostId() {
 		return postId;
@@ -68,14 +80,6 @@ public class Post {
 		this.cloudinaryPostUrl = cloudinaryPostUrl;
 	}
 
-	public int getPostLikes() {
-		return postLikes;
-	}
-
-	public void setPostLikes(int postLikes) {
-		this.postLikes = postLikes;
-	}
-
 	public LocalDateTime getPostCreation() {
 		return postCreation;
 	}
@@ -100,31 +104,43 @@ public class Post {
 		this.user = user;
 	}
 
+	public Set<Profile> getLikedByProfiles() {
+		return likedByProfiles;
+	}
+
+	public void setLikedByProfiles(Set<Profile> likedByProfiles) {
+		this.likedByProfiles = likedByProfiles;
+	}
+
+	public void removeLike(Profile profile) {
+		this.likedByProfiles.remove(profile);
+		profile.getLikedPosts().remove(this);
+	}
+
 	public Post() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public String toString() {
+		return "Post [postId=" + postId + ", postTitle=" + postTitle + ", postContent=" + postContent
+				+ ", publicPostUrl=" + publicPostUrl + ", cloudinaryPostUrl=" + cloudinaryPostUrl + ", postCreation="
+				+ postCreation + ", postUpdation=" + postUpdation + "]";
+	}
+
 	public Post(long postId, String postTitle, String postContent, String publicPostUrl, String cloudinaryPostUrl,
-			int postLikes, LocalDateTime postCreation, LocalDateTime postUpdation, User user) {
+			LocalDateTime postCreation, LocalDateTime postUpdation, User user, Set<Profile> likedByProfiles) {
 		super();
 		this.postId = postId;
 		this.postTitle = postTitle;
 		this.postContent = postContent;
 		this.publicPostUrl = publicPostUrl;
 		this.cloudinaryPostUrl = cloudinaryPostUrl;
-		this.postLikes = postLikes;
 		this.postCreation = postCreation;
 		this.postUpdation = postUpdation;
 		this.user = user;
-	}
-
-	@Override
-	public String toString() {
-		return "Post [postId=" + postId + ", postTitle=" + postTitle + ", postContent=" + postContent
-				+ ", publicPostUrl=" + publicPostUrl + ", cloudinaryPostUrl=" + cloudinaryPostUrl + ", postLikes="
-				+ postLikes + ", postCreation=" + postCreation + ", postUpdation=" + postUpdation + ", user=" + user
-				+ "]";
+		this.likedByProfiles = likedByProfiles;
 	}
 
 }

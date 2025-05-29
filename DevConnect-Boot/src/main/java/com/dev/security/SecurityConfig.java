@@ -22,7 +22,7 @@ public class SecurityConfig {
 
     // Define the CORS filter bean
     @Bean
-    public CorsFilter corsFilter() {
+    CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
         CorsConfiguration config = new CorsConfiguration();

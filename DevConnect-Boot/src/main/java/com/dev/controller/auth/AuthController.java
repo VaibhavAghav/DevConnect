@@ -1,6 +1,8 @@
 package com.dev.controller.auth;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -77,6 +79,8 @@ public class AuthController {
 		profileRepository.save(profile);
 		System.out.println("AuthController Profile saved " + profile);
 		System.out.println("AuthController User saved " + user);
-		return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
+		Map<String, String> response = new HashMap<>();
+		response.put("message", "User registered successfully!");
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

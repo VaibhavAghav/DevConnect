@@ -11,6 +11,8 @@ import Post from "./Component/Post/Post";
 import PrivateRoute from "./Component/Signing/PrivateRoute";
 import Profile from "./Component/Profile/Profile";
 import UpdateProfile from "./Component/Profile/UpdateProfile";
+import AddPost from "./Component/Post/AddPost";
+import GetUserAllPost from "./Component/Post/GetUserAllPost";
 
 function App() {
   return (
@@ -38,7 +40,24 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/addpost"
+          element={
+            <PrivateRoute>
+              <AddPost />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/getallpost"
+          element={
+            <PrivateRoute>
+              <GetUserAllPost />
+            </PrivateRoute>
+          }
+        />
       </Routes>
+
       <Footer />
     </>
   );

@@ -20,7 +20,12 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 //			+ "p.public_image AS publicImage, p.cloudinary_image AS cloudinaryImage, "
 //			+ "p.git_hub_link AS gitHubLink, p.profile_bio AS profileBio, p.profile_user_name AS profileUserName "
 //			+ "FROM profile p INNER JOIN user u ON u.user_id = p.user_id WHERE u.user_name = :userName", nativeQuery = true)
+//	Optional<ProfiledUser> findProfileByUserName(@Param("userName") String userName);
+
 	@Query("SELECT p FROM Profile p WHERE p.user.userName = :userName")
-	Optional<ProfiledUser> findProfileByUserName(@Param("userName") String userName);
+	Optional<Profile> findByUserName(@Param("userName") String userName);
+
+	@Query(value = "select * from profile where profile_user_name = :profileName ", nativeQuery = true)
+	public Optional<Profile> findProfileByProfileName(@Param("profileName") String profileName);
 
 }

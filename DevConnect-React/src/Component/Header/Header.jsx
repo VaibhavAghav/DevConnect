@@ -75,6 +75,14 @@ function Header() {
                 Posts
               </Link>
             </li>
+
+            {userName && (
+              <li className="nav-item mx-3">
+                <Link className="nav-link" to="/addpost">
+                  Add Post
+                </Link>
+              </li>
+            )}
             <li className="nav-item mx-3">
               <Link className="nav-link" to="/about">
                 About
@@ -100,9 +108,11 @@ function Header() {
         <div className="d-flex align-items-center">
           {userName ? (
             <>
-              <span className="btn btn-outline-primary btn-sm me-2 d-flex align-items-center">
-                <FaUserCircle className="me-1" /> {userName}
-              </span>
+              <Link to={"/getallpost"}>
+                <span className="btn btn-outline-primary btn-sm me-2 d-flex align-items-center">
+                  <FaUserCircle className="me-1" /> {userName}
+                </span>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="btn btn-outline-danger btn-sm"

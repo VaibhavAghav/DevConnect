@@ -15,6 +15,8 @@ public interface ProfileService {
 
 	public Profile getProfileByProfileId(long profileId);
 
+	public Profile getProfileByProfileName(String profileName);
+
 	public Profile getProfileByUserName(String userName);
 
 }
