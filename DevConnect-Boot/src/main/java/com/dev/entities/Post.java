@@ -2,21 +2,12 @@ package com.dev.entities;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.ToStringExclude;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 @Entity
 public class Post {
@@ -24,6 +15,7 @@ public class Post {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long postId;
+
 	private String postTitle;
 	private String postContent;
 	private String publicPostUrl;
@@ -32,13 +24,43 @@ public class Post {
 	private LocalDateTime postUpdation;
 
 	@ManyToOne
-	@JsonIgnoreProperties({"posts", "password", "email"})
+	@JsonIgnoreProperties({ "posts", "comments", "userPassword", "userEmail" })
 	private User user;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "post_likes", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "profile_id"))
 	@ToStringExclude
 	private Set<Profile> likedByProfiles = new HashSet<>();
+
+	@OneToMany(mappedBy = "post", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("post")
+	private List<Comment> comments;
+
+	public Post() {
+	}
+
+	public Post(long postId, String postTitle, String postContent, String publicPostUrl, String cloudinaryPostUrl,
+			LocalDateTime postCreation, LocalDateTime postUpdation, User user, Set<Profile> likedByProfiles) {
+		this.postId = postId;
+		this.postTitle = postTitle;
+		this.postContent = postContent;
+		this.publicPostUrl = publicPostUrl;
+		this.cloudinaryPostUrl = cloudinaryPostUrl;
+		this.postCreation = postCreation;
+		this.postUpdation = postUpdation;
+		this.user = user;
+		this.likedByProfiles = likedByProfiles;
+	}
+
+	@Override
+	public String toString() {
+		return "Post [postId=" + postId + ", postTitle=" + postTitle + ", postContent=" + postContent + "]";
+	}
+
+	public void removeLike(Profile profile) {
+		this.likedByProfiles.remove(profile);
+		profile.getLikedPosts().remove(this);
+	}
 
 	public long getPostId() {
 		return postId;
@@ -112,35 +134,11 @@ public class Post {
 		this.likedByProfiles = likedByProfiles;
 	}
 
-	public void removeLike(Profile profile) {
-		this.likedByProfiles.remove(profile);
-		profile.getLikedPosts().remove(this);
+	public List<Comment> getComments() {
+		return comments;
 	}
 
-	public Post() {
-		super();
-		// TODO Auto-generated constructor stub
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
-
-	@Override
-	public String toString() {
-		return "Post [postId=" + postId + ", postTitle=" + postTitle + ", postContent=" + postContent
-				+ ", publicPostUrl=" + publicPostUrl + ", cloudinaryPostUrl=" + cloudinaryPostUrl + ", postCreation="
-				+ postCreation + ", postUpdation=" + postUpdation + "]";
-	}
-
-	public Post(long postId, String postTitle, String postContent, String publicPostUrl, String cloudinaryPostUrl,
-			LocalDateTime postCreation, LocalDateTime postUpdation, User user, Set<Profile> likedByProfiles) {
-		super();
-		this.postId = postId;
-		this.postTitle = postTitle;
-		this.postContent = postContent;
-		this.publicPostUrl = publicPostUrl;
-		this.cloudinaryPostUrl = cloudinaryPostUrl;
-		this.postCreation = postCreation;
-		this.postUpdation = postUpdation;
-		this.user = user;
-		this.likedByProfiles = likedByProfiles;
-	}
-
 }

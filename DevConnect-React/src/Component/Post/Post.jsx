@@ -5,7 +5,7 @@ import PostCard from "./PostCard";
 function Post() {
   const [posts, setPosts] = useState([]);
   const token = Cookies.get("token");
-  const userName = localStorage.getItem("userName");
+  const userName = localStorage.getItem("userName");  
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch("http://localhost:8080/post", {

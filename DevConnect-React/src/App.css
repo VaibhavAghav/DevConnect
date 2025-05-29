@@ -5,3 +5,46 @@
 .footer-faint-blue {
   background-color: rgba(173, 216, 230, 0.3); /* LightBlue with transparency */
 }
+/* Default Light Mode styles */
+body {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+/* Dark Mode styles */
+body.dark-mode {
+  background-color: #212529;
+  color: #f8f9fa;
+}
+
+.navbar-light {
+  background-color: #e3f2fd;
+}
+
+body.dark-mode .navbar-light {
+  background-color: #343a40;
+}
+
+body.dark-mode .nav-link {
+  color: #f8f9fa !important;
+}
+
+body.dark-mode .btn-outline-secondary {
+  color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+
+body.dark-mode .btn-outline-primary {
+  color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+
+body.dark-mode .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+body.dark-mode .btn-outline-danger {
+  color: #f8f9fa;
+  border-color: #f8f9fa;
+}

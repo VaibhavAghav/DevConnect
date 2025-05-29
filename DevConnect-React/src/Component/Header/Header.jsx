@@ -21,6 +21,9 @@ function Header() {
     if (token && user) {
       setUserName(user);
     }
+    const savedMode = localStorage.getItem("darkMode") === "true";
+    setDarkMode(savedMode);
+    document.body.classList.toggle("dark-mode", savedMode);
   }, []);
 
   const handleLogout = () => {

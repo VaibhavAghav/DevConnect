@@ -8,10 +8,15 @@ const PostCard = ({ post, currentUser, showActions }) => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likedByProfiles.length);
 
+  const [comments, setComments] = useState([]);
+  const [visibleComments, setVisibleComments] = useState(2);
+  const [newComment, setNewComment] = useState("");
+
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(post.postTitle);
   const [editContent, setEditContent] = useState(post.postContent);
 
+  // Like status fetch
   useEffect(() => {
     const fetchLikeStatus = async () => {
       if (!currentUser) return;
@@ -26,8 +31,6 @@ const PostCard = ({ post, currentUser, showActions }) => {
           }
         );
         const text = await response.text();
-        console.log("current user ", text);
-
         setLiked(text ? JSON.parse(text) : false);
       } catch (error) {
         console.error("Error fetching like status", error);
@@ -36,6 +39,31 @@ const PostCard = ({ post, currentUser, showActions }) => {
 
     fetchLikeStatus();
   }, [post.postId, currentUser, token]);
+
+  // Fetch comments
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/comment/post/${post.postId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
+        console.log(data);
+
+        setComments(data);
+      } catch (error) {
+        console.error("Error fetching comments", error);
+      }
+    };
+
+    fetchComments();
+  }, [post.postId, token]);
 
   const handleLikeToggle = async () => {
     if (!currentUser) {
@@ -49,7 +77,7 @@ const PostCard = ({ post, currentUser, showActions }) => {
       const method = liked ? "DELETE" : "POST";
 
       const response = await fetch(url, {
-        method: method,
+        method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -67,7 +95,7 @@ const PostCard = ({ post, currentUser, showActions }) => {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDeletePost = async () => {
     if (window.confirm("Are you sure you want to delete this post?")) {
       try {
         const response = await fetch(
@@ -128,6 +156,64 @@ const PostCard = ({ post, currentUser, showActions }) => {
     } catch (error) {
       console.error("Error updating post", error);
     }
+  };
+
+  const handleAddComment = async () => {
+    if (!newComment.trim()) return;
+    try {
+      const commentData = {
+        content: newComment,
+        user: { userName: userName },
+        post: { postId: post.postId },
+      };
+
+      const response = await fetch(`http://localhost:8080/comment/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(commentData),
+      });
+
+      if (response.ok) {
+        const newCommentData = await response.json();
+        setComments((prev) => [newCommentData, ...prev]);
+        setNewComment("");
+      } else {
+        alert("Failed to add comment");
+      }
+    } catch (error) {
+      console.error("Error adding comment", error);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (window.confirm("Delete this comment?")) {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/comment/delete/${commentId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          setComments((prev) => prev.filter((c) => c.commentId !== commentId));
+        } else {
+          alert("Failed to delete comment");
+        }
+      } catch (error) {
+        console.error("Error deleting comment", error);
+      }
+    }
+  };
+
+  const handleShowMore = () => {
+    setVisibleComments((prev) => prev + 2);
   };
 
   return (
@@ -223,12 +309,62 @@ const PostCard = ({ post, currentUser, showActions }) => {
             </button>
             <button
               className="btn btn-sm btn-outline-danger d-flex align-items-center"
-              onClick={handleDelete}
+              onClick={handleDeletePost}
             >
               <Trash size={16} className="me-1" /> Delete
             </button>
           </div>
         )}
+
+        {/* Comments Section */}
+        <div className="mt-3">
+          <h6 className="mb-2">Comments:</h6>
+          {comments.slice(0, visibleComments).map((comment) => (
+            <div
+              key={comment.commentId}
+              className="mb-2 d-flex justify-content-between"
+            >
+              <div>
+                <strong>{comment.user.username}:</strong>{" "}
+                <span>{comment.content}</span>
+              </div>
+              {comment.user.username === userName && (
+                <button
+                  className="btn btn-sm btn-link text-danger p-0"
+                  onClick={() => handleDeleteComment(comment.commentId)}
+                >
+                  <Trash size={14} />
+                </button>
+              )}
+            </div>
+          ))}
+
+          {visibleComments < comments.length && (
+            <button
+              className="btn btn-sm btn-link text-primary p-0"
+              onClick={handleShowMore}
+            >
+              Show more
+            </button>
+          )}
+
+          {/* Add Comment */}
+          <div className="d-flex mt-2">
+            <input
+              type="text"
+              className="form-control form-control-sm me-2"
+              placeholder="Add a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+            <button
+              className="btn btn-sm btn-primary"
+              onClick={handleAddComment}
+            >
+              Post
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

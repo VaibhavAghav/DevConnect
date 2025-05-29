@@ -8,7 +8,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.dev.constant.Role;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -30,24 +29,22 @@ public class User implements UserDetails {
 	private Role role;
 
 	private boolean isEnabled = true;
-
 	private boolean isAccountNonExpired = true;
-
 	private boolean isAccountNonLocked = true;
-
 	private boolean isCredentialsNonExpired = true;
 
 	private String phoneNumber;
-
 	private boolean isPhoneNumberVerified;
 
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
 	private Profile profile;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<Post> post;
+	private List<Post> posts;
 
-	// Constructors
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Comment> comments;
+
 	public User() {
 	}
 
@@ -67,7 +64,6 @@ public class User implements UserDetails {
 		this.isPhoneNumberVerified = isPhoneNumberVerified;
 	}
 
-	// UserDetails implementation
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(role.name()));
@@ -103,7 +99,8 @@ public class User implements UserDetails {
 		return this.isEnabled;
 	}
 
-	// Getters & Setters for other fields
+	// Getters & Setters
+
 	public long getUserId() {
 		return userId;
 	}
@@ -144,6 +141,22 @@ public class User implements UserDetails {
 		this.profile = profile;
 	}
 
+	public List<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(List<Post> posts) {
+		this.posts = posts;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
@@ -156,8 +169,8 @@ public class User implements UserDetails {
 		return isPhoneNumberVerified;
 	}
 
-	public void setPhoneNumberVerified(boolean isPhoneNumberVerified) {
-		this.isPhoneNumberVerified = isPhoneNumberVerified;
+	public void setPhoneNumberVerified(boolean phoneNumberVerified) {
+		isPhoneNumberVerified = phoneNumberVerified;
 	}
 
 	@Override

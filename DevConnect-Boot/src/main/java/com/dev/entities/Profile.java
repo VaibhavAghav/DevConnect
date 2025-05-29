@@ -4,18 +4,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.ToStringExclude;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 @Entity
 public class Profile {
@@ -25,17 +16,13 @@ public class Profile {
 	private Long profileId;
 
 	private String profileUserName;
-
 	private String profileBio;
-
 	private String gitHubLink;
-
 	private String publicImage;
-
-	private String CloudinaryImage;
+	private String cloudinaryImage;
 
 	@OneToOne
-	@JoinColumn(name = "user_Id")
+	@JoinColumn(name = "user_id")
 	@JsonIgnore
 	private User user;
 
@@ -43,6 +30,23 @@ public class Profile {
 	@ToStringExclude
 	@JsonIgnore
 	private Set<Post> likedPosts = new HashSet<>();
+
+	public Profile() {
+	}
+
+	public Profile(Long profileId, String profileUserName, String profileBio, String gitHubLink, String publicImage,
+			String cloudinaryImage, User user, Set<Post> likedPosts) {
+		this.profileId = profileId;
+		this.profileUserName = profileUserName;
+		this.profileBio = profileBio;
+		this.gitHubLink = gitHubLink;
+		this.publicImage = publicImage;
+		this.cloudinaryImage = cloudinaryImage;
+		this.user = user;
+		this.likedPosts = likedPosts;
+	}
+
+	// Getters, Setters, equals, hashCode, toString
 
 	public Long getProfileId() {
 		return profileId;
@@ -85,11 +89,11 @@ public class Profile {
 	}
 
 	public String getCloudinaryImage() {
-		return CloudinaryImage;
+		return cloudinaryImage;
 	}
 
 	public void setCloudinaryImage(String cloudinaryImage) {
-		CloudinaryImage = cloudinaryImage;
+		this.cloudinaryImage = cloudinaryImage;
 	}
 
 	public User getUser() {
@@ -100,18 +104,6 @@ public class Profile {
 		this.user = user;
 	}
 
-	public Profile() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public String toString() {
-		return "Profile [profileId=" + profileId + ", profileUserName=" + profileUserName + ", profileBio=" + profileBio
-				+ ", gitHubLink=" + gitHubLink + ", publicImage=" + publicImage + ", CloudinaryImage=" + CloudinaryImage
-				+ "]";
-	}
-
 	public Set<Post> getLikedPosts() {
 		return likedPosts;
 	}
@@ -120,24 +112,11 @@ public class Profile {
 		this.likedPosts = likedPosts;
 	}
 
-	public Profile(Long profileId, String profileUserName, String profileBio, String gitHubLink, String publicImage,
-			String cloudinaryImage, User user, Set<Post> likedPosts) {
-		super();
-		this.profileId = profileId;
-		this.profileUserName = profileUserName;
-		this.profileBio = profileBio;
-		this.gitHubLink = gitHubLink;
-		this.publicImage = publicImage;
-		CloudinaryImage = cloudinaryImage;
-		this.user = user;
-		this.likedPosts = likedPosts;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
-		if (o == null || getClass() != o.getClass())
+		if (!(o instanceof Profile))
 			return false;
 		Profile profile = (Profile) o;
 		return Objects.equals(profileId, profile.profileId);
@@ -148,4 +127,10 @@ public class Profile {
 		return Objects.hash(profileId);
 	}
 
+	@Override
+	public String toString() {
+		return "Profile{" + "profileId=" + profileId + ", profileUserName='" + profileUserName + '\'' + ", profileBio='"
+				+ profileBio + '\'' + ", gitHubLink='" + gitHubLink + '\'' + ", publicImage='" + publicImage + '\''
+				+ ", cloudinaryImage='" + cloudinaryImage + '\'' + '}';
+	}
 }

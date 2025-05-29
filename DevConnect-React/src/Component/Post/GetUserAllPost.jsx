@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import PostCard from "./PostCard";
+import { Link } from "react-router-dom";
 
 function GetUserAllPost() {
   const userName = localStorage.getItem("userName");
@@ -40,7 +41,10 @@ function GetUserAllPost() {
     <div className="container my-5">
       <h2 className="mb-4">Posts by @{userName}</h2>
       {posts.length === 0 ? (
-        <p>No posts found for this user.</p>
+        <h3>
+          {" "}
+          <Link to={"/addpost"}> Upload Your First Post. </Link>
+        </h3>
       ) : (
         <div className="d-flex flex-wrap justify-content-start gap-4">
           {posts.map((post) => (
